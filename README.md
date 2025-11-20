@@ -147,12 +147,12 @@ Accepts JSON input and returns the model prediction.
   "Volatility": 0.012,
   "RSI": 54
 }
-
+```
 Swagger UI:
 
 👉 http://localhost:8000/docs
 
-🐳 7. Docker Deployment
+## 🐳 7. Docker Deployment
 
 This project is fully containerized.
 
@@ -195,7 +195,7 @@ MLzoomcamp_Midterm2025/
 │
 └── README.md
 
-▶️ Run Locally (Without Docker)
+## ▶️ Run Locally (Without Docker)
 
 pip install -r requirements.txt
 python api.py
@@ -205,7 +205,7 @@ API is available at:
 
 👉 http://127.0.0.1:8000/docs
 
-Summary
+## Summary
 
 This repository demonstrates the complete ML lifecycle:
 
