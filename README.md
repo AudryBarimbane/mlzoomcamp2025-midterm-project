@@ -5,7 +5,7 @@
 
 ## 📌 Overview
 
-This project applies Machine Learning to financial market data from CAC40 companies to **predict short-term market movement**.  
+This project applies Machine Learning to financial market data from CAC40 companies to predict **short-term market movement**.  
 It follows the complete MLZoomcamp pipeline:
 
 1. Pick a problem & dataset  
@@ -14,83 +14,35 @@ It follows the complete MLZoomcamp pipeline:
 4. Train several models & select the best  
 5. Export the trained model  
 6. Package the model as a FastAPI service  
-7. Deploy the model with Docker  
+7. Deploy the service with Docker  
 
 This repository includes:
 
 - Dataset  
-- Jupyter Notebooks (EDA, feature engineering, training, predictions)  
+- Jupyter Notebooks (EDA, model training, predictions)  
 - Python scripts (`train.py`, `predict.py`, `api.py`)  
-- Trained model files (`model.pkl`, `scaler.pkl`, `features.json`)  
-- Dockerfile for deployment  
+- Trained model (`model.pkl`), scaler (`scaler.pkl`), and feature order (`features.json`)  
+- Dockerfile  
 
 ---
 
 # 🎯 1. Problem Definition
 
-Financial markets move quickly and are influenced by many variables such as price changes, volume, and technical indicators.  
-The objective is to build a machine learning model that **predicts a binary market movement signal ("Target")** for CAC40 stocks.
+Financial markets move quickly and depend on many technical and price-based indicators.  
+The goal is to build a machine learning model that predicts **the probability of an upward market movement (“Target”)** for CAC40 stocks.
 
-The ML model can be used for:
+Originally the project used binary output (0 or 1), but the final API returns a **probability between 0 and 1**, which reflects:
 
-- Short-term signal generation  
-- Automated trading strategies  
-- Market monitoring tools  
-
----
-
-# 📚 2. Dataset
-
-Daily data for CAC40 companies including technical indicators.
-
-**Columns include:**
-
-# 📘 CAC40 Market Movement Prediction  
-**Midterm CAPSTONE Project – MLZoomcamp 2025**
-
----
-
-## 📌 Overview
-
-This project applies Machine Learning to financial market data from CAC40 companies to **predict short-term market movement**.  
-It follows the complete MLZoomcamp pipeline:
-
-1. Pick a problem & dataset  
-2. Describe how ML helps  
-3. Prepare data & run EDA  
-4. Train several models & select the best  
-5. Export the trained model  
-6. Package the model as a FastAPI service  
-7. Deploy the model with Docker  
-
-This repository includes:
-
-- Dataset  
-- Jupyter Notebooks (EDA, feature engineering, training, predictions)  
-- Python scripts (`train.py`, `predict.py`, `api.py`)  
-- Trained model files (`model.pkl`, `scaler.pkl`, `features.json`)  
-- Dockerfile for deployment  
-
----
-
-# 🎯 1. Problem Definition
-
-Financial markets move quickly and are influenced by many variables such as price changes, volume, and technical indicators.  
-The objective is to build a machine learning model that **predicts a binary market movement signal ("Target")** for CAC40 stocks.
-
-The ML model can be used for:
-
-- Short-term signal generation  
-- Automated trading strategies  
-- Market monitoring tools  
+👉 the model’s confidence instead of a hard class.  
+👉 better usability for trading systems (thresholds can be customized).  
 
 ---
 
 # 📚 2. Dataset
 
-Daily data for CAC40 companies including technical indicators.
+Daily market data for CAC40 companies, including both OHLCV features and engineered technical indicators.
 
-**Columns include:**
+**Columns:**
 
 symbol, date, open, high, low, close, volume,
 adjclose, Return, MA20, MA50, Volatility, RSI, Target
@@ -98,8 +50,8 @@ adjclose, Return, MA20, MA50, Volatility, RSI, Target
 markdown
 Copier le code
 
-- All values are numerical except symbol/date (string).
-- Stored in `data/cac40_features.csv`.
+- All numeric except `symbol` and `date`.  
+- Stored in: `data/cac40_features.csv`.
 
 ---
 
@@ -108,37 +60,39 @@ Copier le code
 Performed in `cac40_analysis.ipynb`:
 
 - Data inspection  
-- Missing value analysis  
-- Feature distribution  
+- Missing values  
+- Feature distributions  
 - Correlation heatmap  
+- Technical indicator behavior  
 - Target distribution  
-- Visual analysis of market features  
 
-This ensures data reliability before training.
+This ensures dataset consistency before training.
 
 ---
 
 # 🧠 4. Model Training
 
-Models evaluated:
+Three models were evaluated:
 
-- Logistic Regression  
-- Random Forest  
-- XGBoost (**best performance**)  
+- **Logistic Regression**
+- **Random Forest**
+- **XGBoost (best performance)**
 
-**Evaluation metrics:**
+XGBoost delivered the highest F1-score and the best calibration for probability prediction.
+
+**Metrics used:**
 
 - Accuracy  
-- Precision / Recall  
+- Precision/Recall  
 - F1-score  
-- Confusion matrix  
+- Confusion Matrix  
 
-Training workflow available in:
+The training workflow appears in:
 
 - `train.ipynb`
 - `train.py`
 
-Files exported:
+Artifacts exported:
 
 model.pkl
 scaler.pkl
@@ -153,33 +107,38 @@ Copier le code
 
 Available in:
 
-- `predict.ipynb`
+- `predict.ipynb`  
 - `predict.py`
 
-Prediction workflow:
+The prediction steps are:
 
-1. Load `model.pkl`
-2. Load `scaler.pkl`
-3. Read feature order from `features.json`
-4. Validate and process input
-5. Scale features
-6. Predict binary value (0 or 1)
+1. Load `model.pkl` (XGBoost)  
+2. Load `scaler.pkl`  
+3. Reorder input features according to `features.json`  
+4. Scale numerical data  
+5. Predict **a probability between 0 and 1**  
+   - Example output: `{ "prediction": 0.63 }`  
+
+This probability means:
+
+- 0.63 → 63% chance of upward movement  
+- Users may apply their own threshold (e.g., 0.5 or 0.6)
 
 ---
 
 # 🚀 6. FastAPI Web Service
 
-The file **`api.py`** provides a real-time prediction API.
+`api.py` provides a fully operational REST API.
 
-### Endpoints
+### **Endpoints**
 
 #### `GET /`
-Simple health check.
+Returns a simple health check.
 
 #### `POST /predict`
-Accepts JSON input and returns the model prediction.
+Accepts JSON input and returns the predicted probability.
 
-Example input:
+**Example input:**
 
 ```json
 {
@@ -195,11 +154,11 @@ Example input:
   "Volatility": 0.012,
   "RSI": 54
 }
-Swagger UI:
+Access the automatic API documentation:
 👉 http://localhost:8000/docs
 
 🐳 7. Docker Deployment
-This project is fully containerized.
+This project can be deployed in a fully isolated Docker container.
 
 Step 1 — Build the Docker Image
 bash
@@ -209,12 +168,11 @@ Step 2 — Run the Container
 bash
 Copier le code
 docker run -d -p 8000:8000 ml-api
-Step 3 — Access API
-Swagger interface:
-
+Step 3 — Test the API
+Swagger UI:
 👉 http://localhost:8000/docs
 
-Or test manually:
+Or with curl:
 
 bash
 Copier le code
@@ -249,22 +207,8 @@ bash
 Copier le code
 pip install -r requirements.txt
 python api.py
-API is available at:
-
+API will be available at:
 👉 http://127.0.0.1:8000/docs
-
-🧪 Behind the Scenes
-When sending data to /predict:
-
-FastAPI receives JSON
-
-Converts JSON into a DataFrame
-
-Orders features using features.json
-
-Applies the scaler
-
-Runs the XGBoost model
 
 
 
@@ -273,11 +217,8 @@ This repository demonstrates the complete ML lifecycle:
 
 ✔ Problem definition
 ✔ Dataset acquisition
-✔ EDA
-✔ Feature engineering
-✔ Model training & tuning
-✔ Exporting production artifacts
-✔ FastAPI web service
-✔ Docker containerization
-
----
+✔ EDA & feature engineering
+✔ Model training and selection (XGBoost best)
+✔ Exporting ML artifacts
+✔ Serving predictions with FastAPI
+✔ Deploying the service with Docker
