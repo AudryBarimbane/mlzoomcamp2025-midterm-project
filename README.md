@@ -195,7 +195,7 @@ MLzoomcamp_Midterm2025/
 │
 └── README.md
 
-1️⃣ Clone the Project (Windows 11 + WSL Recommended)
+## Clone the Project (Windows 11 + WSL Recommended)
 
 All commands should be run inside Ubuntu WSL, not Windows PowerShell.
 
@@ -208,7 +208,7 @@ cd ~
 git clone https://github.com/YOUR_USERNAME/MLzoomcamp_Midterm2025.git
 cd MLzoomcamp_Midterm2025
 
-2️⃣ Run Locally (Without Docker)
+## Run Locally (Without Docker)
 ✔ Create a virtual environment
 python3 -m venv venv
 source venv/bin/activate
