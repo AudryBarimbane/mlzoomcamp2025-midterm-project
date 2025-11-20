@@ -5,7 +5,7 @@
 
 ## 📌 Overview
 
-This project applies Machine Learning to financial market data from CAC40 companies to predict **short-term market movement**.  
+This project applies Machine Learning to financial market data from CAC40 companies to **predict short-term market movement**.  
 It follows the complete MLZoomcamp pipeline:
 
 1. Pick a problem & dataset  
@@ -14,42 +14,44 @@ It follows the complete MLZoomcamp pipeline:
 4. Train several models & select the best  
 5. Export the trained model  
 6. Package the model as a FastAPI service  
-7. Deploy the service with Docker  
+7. Deploy the model with Docker  
 
 This repository includes:
 
 - Dataset  
-- Jupyter Notebooks (EDA, model training, predictions)  
+- Jupyter Notebooks (EDA, feature engineering, training, predictions)  
 - Python scripts (`train.py`, `predict.py`, `api.py`)  
-- Trained model (`model.pkl`), scaler (`scaler.pkl`), and feature order (`features.json`)  
-- Dockerfile  
+- Trained model files (`model.pkl`, `scaler.pkl`, `features.json`)  
+- Dockerfile for deployment  
 
 ---
 
 # 🎯 1. Problem Definition
 
-Financial markets move quickly and depend on many technical and price-based indicators.  
-The goal is to build a machine learning model that predicts **the probability of an upward market movement (“Target”)** for CAC40 stocks.
+Financial markets move quickly and are influenced by many variables such as price changes, volume, and technical indicators.  
+The objective is to build a machine learning model that **predicts a binary market movement signal ("Target")** for CAC40 stocks.
 
-Originally the project used binary output (0 or 1), but the final API returns a **probability between 0 and 1**, which reflects:
+The ML model can be used for:
 
-👉 the model’s confidence instead of a hard class.  
-👉 better usability for trading systems (thresholds can be customized).  
+- Short-term signal generation  
+- Automated trading strategies  
+- Market monitoring tools  
 
 ---
 
 # 📚 2. Dataset
 
-Daily market data for CAC40 companies, including both OHLCV features and engineered technical indicators.
+Daily data for CAC40 companies including technical indicators.
 
-**Columns:**
+**Columns include:**
 
 symbol, date, open, high, low, close, volume,
 adjclose, Return, MA20, MA50, Volatility, RSI, Target
 
 
-- All numeric except `symbol` and `date`.  
-- Stored in: `data/cac40_features.csv`.
+
+- All values are numerical except symbol/date (string).  
+- Stored in `data/cac40_features.csv`.
 
 ---
 
@@ -58,44 +60,43 @@ adjclose, Return, MA20, MA50, Volatility, RSI, Target
 Performed in `cac40_analysis.ipynb`:
 
 - Data inspection  
-- Missing values  
-- Feature distributions  
+- Missing value analysis  
+- Feature distribution  
 - Correlation heatmap  
-- Technical indicator behavior  
 - Target distribution  
+- Visual analysis of market features  
 
-This ensures dataset consistency before training.
+This ensures data reliability before training.
 
 ---
 
 # 🧠 4. Model Training
 
-Three models were evaluated:
+Models evaluated:
 
-- **Logistic Regression**
-- **Random Forest**
-- **XGBoost (best performance)**
+- Logistic Regression  
+- Decision Tree  
+- Random Forest  
+- XGBoost (**best performance**)  
 
-XGBoost delivered the highest F1-score and the best calibration for probability prediction.
-
-**Metrics used:**
+**Evaluation metrics:**
 
 - Accuracy  
-- Precision/Recall  
+- Precision / Recall  
 - F1-score  
-- Confusion Matrix  
+- Confusion matrix  
 
-The training workflow appears in:
+Training workflow available in:
 
 - `train.ipynb`
 - `train.py`
 
-Artifacts exported:
-
+**Files exported:**
 
 model.pkl
 scaler.pkl
 features.json
+
 
 
 ---
@@ -104,38 +105,33 @@ features.json
 
 Available in:
 
-- `predict.ipynb`  
+- `predict.ipynb`
 - `predict.py`
 
-The prediction steps are:
+Prediction workflow:
 
-1. Load `model.pkl` (XGBoost)  
+1. Load `model.pkl`  
 2. Load `scaler.pkl`  
-3. Reorder input features according to `features.json`  
-4. Scale numerical data  
-5. Predict **a probability between 0 and 1**  
-   - Example output: `{ "prediction": 0.63 }`  
-
-This probability means:
-
-- 0.63 → 63% chance of upward movement  
-- Users may apply their own threshold (e.g., 0.5 or 0.6)
+3. Read feature order from `features.json`  
+4. Validate and process input  
+5. Scale features  
+6. Predict binary value (0 or 1)  
 
 ---
 
 # 🚀 6. FastAPI Web Service
 
-`api.py` provides a fully operational REST API.
+The file **`api.py`** provides a real-time prediction API.
 
-### **Endpoints**
+### Endpoints
 
 #### `GET /`
-Returns a simple health check.
+Simple health check.
 
 #### `POST /predict`
-Accepts JSON input and returns the predicted probability.
+Accepts JSON input and returns the model prediction.
 
-**Example input:**
+### Example input
 
 ```json
 {
@@ -151,8 +147,3 @@ Accepts JSON input and returns the predicted probability.
   "Volatility": 0.012,
   "RSI": 54
 }
-
-
-
-**Access the automatic API documentation:**
-👉 http://localhost:8000/docs
