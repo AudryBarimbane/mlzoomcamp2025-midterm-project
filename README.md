@@ -204,20 +204,20 @@ All commands should be run inside Ubuntu WSL, not Windows PowerShell.
 Search Windows → Ubuntu → open it.
 
 ✅ Clone the GitHub repository
-cd ~
-git clone https://github.com/YOUR_USERNAME/MLzoomcamp_Midterm2025.git
-cd MLzoomcamp_Midterm2025
+- cd ~
+- git clone https://github.com/YOUR_USERNAME/MLzoomcamp_Midterm2025.git
+- cd MLzoomcamp_Midterm2025
 
 ## Run Locally (Without Docker)
 ✔ Create a virtual environment
-python3 -m venv venv
-source venv/bin/activate
+- python3 -m venv venv
+- source venv/bin/activate
 
 ✔ Install dependencies
-pip install -r requirements.txt
+- pip install -r requirements.txt
 
 ✔ Start the FastAPI service
-python api.py
+- python api.py
 
 
 Your API runs at:
@@ -228,10 +228,10 @@ Your API runs at:
 
 ## Run Using Docker (Recommended)
 ✔ Build the Docker image
-docker build -t ml-api .
+- docker build -t ml-api .
 
 ✔ Run the container
-docker run -d -p 8000:8000 ml-api
+- docker run -d -p 8000:8000 ml-api
 
 ✔ Access the API
 
