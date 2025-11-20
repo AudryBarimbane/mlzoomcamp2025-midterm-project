@@ -154,5 +154,5 @@ Accepts JSON input and returns the predicted probability.
 
 
 
-Access the automatic API documentation:
+**Access the automatic API documentation:**
 👉 http://localhost:8000/docs
