@@ -195,26 +195,54 @@ MLzoomcamp_Midterm2025/
 │
 └── README.md
 
-## ▶️ Run Locally (Without Docker)
+1️⃣ Clone the Project (Windows 11 + WSL Recommended)
 
+All commands should be run inside Ubuntu WSL, not Windows PowerShell.
+
+✅ Open WSL (Ubuntu)
+
+Search Windows → Ubuntu → open it.
+
+✅ Clone the GitHub repository
+cd ~
+git clone https://github.com/YOUR_USERNAME/MLzoomcamp_Midterm2025.git
+cd MLzoomcamp_Midterm2025
+
+2️⃣ Run Locally (Without Docker)
+✔ Create a virtual environment
+python3 -m venv venv
+source venv/bin/activate
+
+✔ Install dependencies
 pip install -r requirements.txt
+
+✔ Start the FastAPI service
 python api.py
+
+
+Your API runs at:
+
+👉 http://127.0.0.1:8000/docs
+
+(Interactive Swagger documentation)
+
+## Run Using Docker (Recommended)
+✔ Build the Docker image
+docker build -t ml-api .
+
+✔ Run the container
+docker run -d -p 8000:8000 ml-api
+
+✔ Access the API
+
+👉 http://localhost:8000/docs
+
+
 
 
 API is available at:
 
 👉 http://127.0.0.1:8000/docs
 
-## Summary
-
-This repository demonstrates the complete ML lifecycle:
-
-✔ Problem definition
-✔ Dataset acquisition
-✔ EDA
-✔ Feature engineering
-✔ Model training & tuning
-✔ Exporting production artifacts
-✔ FastAPI web service
 ✔ Docker containerization
 
