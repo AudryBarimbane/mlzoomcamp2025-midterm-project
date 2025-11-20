@@ -147,3 +147,74 @@ Accepts JSON input and returns the model prediction.
   "Volatility": 0.012,
   "RSI": 54
 }
+
+Swagger UI:
+
+👉 http://localhost:8000/docs
+
+🐳 7. Docker Deployment
+
+This project is fully containerized.
+
+Step 1 — Build the Docker Image
+
+docker build -t ml-api .
+
+
+Step 2 — Run the Container
+
+docker run -d -p 8000:8000 ml-api
+
+
+Step 3 — Access API
+
+Swagger interface:
+
+👉 http://localhost:8000/docs
+
+📂 Repository Structure
+
+MLzoomcamp_Midterm2025/
+│
+├── data/
+│   └── cac40_features.csv
+│
+├── cac40_analysis.ipynb
+├── train.ipynb
+├── predict.ipynb
+│
+├── train.py
+├── predict.py
+├── api.py
+│
+├── Dockerfile
+│
+├── model.pkl
+├── scaler.pkl
+├── features.json
+│
+└── README.md
+
+▶️ Run Locally (Without Docker)
+
+pip install -r requirements.txt
+python api.py
+
+
+API is available at:
+
+👉 http://127.0.0.1:8000/docs
+
+Summary
+
+This repository demonstrates the complete ML lifecycle:
+
+✔ Problem definition
+✔ Dataset acquisition
+✔ EDA
+✔ Feature engineering
+✔ Model training & tuning
+✔ Exporting production artifacts
+✔ FastAPI web service
+✔ Docker containerization
+
