@@ -1,90 +1,43 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[15]:
-
-
-# 1.Import required libraries
-import pandas as pd
 import numpy as np
 import joblib
+import json
 
-# For warnings
-import warnings
-warnings.filterwarnings("ignore")
+# ===============================
+# Load model, scaler, and feature names
+# ===============================
 
+MODEL_PATH = "model.pkl"
+SCALER_PATH = "scaler.pkl"
+FEATURES_PATH = "features.json"
 
+model = joblib.load(MODEL_PATH)
+scaler = joblib.load(SCALER_PATH)
 
-# In[17]:
-
-
-# 2.Load the trained model
-model = joblib.load("model.pkl")
-
-# Load the scaler (used during training)
-scaler = joblib.load("scaler.pkl")
-
-print("Model and scaler loaded successfully.")
+with open(FEATURES_PATH, "r") as f:
+    feature_names = json.load(f)
 
 
-# In[19]:
+# ===============================
+# Prediction Function
+# ===============================
 
+def predict_stock(features_dict):
+    """
+    Predict using the trained ML model.
+    Input: dict containing feature values
+    Output: float (probability)
+    """
 
-# 3.Features that must be provided for prediction
-features = [
-    "symbol", "date", "open", "high", "low", "close", "volume",
-    "adjclose", "Return", "MA20", "MA50", "Volatility", "RSI"
-]
+    # Convert dict → vector (same order as during training)
+    try:
+        data = np.array([[features_dict[feat] for feat in feature_names]])
+    except KeyError as e:
+        raise ValueError(f"Missing feature in request: {str(e)}")
 
+    # Scale input using trained scaler
+    data_scaled = scaler.transform(data)
 
+    # Predict probability (classification model)
+    proba = model.predict_proba(data_scaled)[0][1]
 
-# In[21]:
-
-
-# 4.Example input (you can modify these values)
-sample = {
-    "symbol": "ACA",
-    "date": "2024-01-15",
-    "open": 12.45,
-    "high": 12.60,
-    "low": 12.40,
-    "close": 12.55,
-    "volume": 1520000,
-    "adjclose": 12.55,
-    "Return": 0.004,
-    "MA20": 12.30,
-    "MA50": 12.10,
-    "Volatility": 0.012,
-    "RSI": 58.3
-}
-
-# Convert to DataFrame with correct column order
-sample_df = pd.DataFrame([sample])[features]
-
-sample_df
-
-
-# In[29]:
-
-
-#5. Remove non-numeric columns before prediction
-X = sample_df_scaled.drop(columns=["symbol", "date"])
-
-#6. Make prediction
-prediction = model.predict(X)[0]
-
-print("Predicted Target value:", prediction)
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
+    return float(proba)  # return simple float for FastAPI
