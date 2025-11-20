@@ -47,8 +47,6 @@ Daily market data for CAC40 companies, including both OHLCV features and enginee
 symbol, date, open, high, low, close, volume,
 adjclose, Return, MA20, MA50, Volatility, RSI, Target
 
-markdown
-Copier le code
 
 - All numeric except `symbol` and `date`.  
 - Stored in: `data/cac40_features.csv`.
@@ -94,12 +92,11 @@ The training workflow appears in:
 
 Artifacts exported:
 
+
 model.pkl
 scaler.pkl
 features.json
 
-yaml
-Copier le code
 
 ---
 
@@ -154,71 +151,8 @@ Accepts JSON input and returns the predicted probability.
   "Volatility": 0.012,
   "RSI": 54
 }
+
+
+
 Access the automatic API documentation:
 👉 http://localhost:8000/docs
-
-🐳 7. Docker Deployment
-This project can be deployed in a fully isolated Docker container.
-
-Step 1 — Build the Docker Image
-bash
-Copier le code
-docker build -t ml-api .
-Step 2 — Run the Container
-bash
-Copier le code
-docker run -d -p 8000:8000 ml-api
-Step 3 — Test the API
-Swagger UI:
-👉 http://localhost:8000/docs
-
-Or with curl:
-
-bash
-Copier le code
-curl -X POST "http://localhost:8000/predict" \
-  -H "Content-Type: application/json" \
-  -d "{ \"open\":8000, \"high\":8100, \"low\":7950, ... }"
-📂 Repository Structure
-kotlin
-Copier le code
-MLzoomcamp_Midterm2025/
-│
-├── data/
-│   └── cac40_features.csv
-│
-├── cac40_analysis.ipynb
-├── train.ipynb
-├── predict.ipynb
-│
-├── train.py
-├── predict.py
-├── api.py
-│
-├── Dockerfile
-│
-├── model.pkl
-├── scaler.pkl
-├── features.json
-│
-└── README.md
-▶️ Run Locally (Without Docker)
-bash
-Copier le code
-pip install -r requirements.txt
-python api.py
-API will be available at:
-👉 http://127.0.0.1:8000/docs
-
-
-
-🏁 Summary
-This repository demonstrates the complete ML lifecycle:
-
-✔ Problem definition
-✔ Dataset acquisition
-✔ EDA & feature engineering
-✔ Model training and selection (XGBoost best)
-✔ Exporting ML artifacts
-✔ Serving predictions with FastAPI
-✔ Deploying the service with Docker
